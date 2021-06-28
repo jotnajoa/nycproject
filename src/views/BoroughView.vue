@@ -270,7 +270,11 @@ export default {
     },
     createContourLine(){
 
+if(this.frameCount==1){
+  this.isLoading=true
+}
       if(this.frameCount<this.contourLength && this.contourCoordArr){
+
         const lng=this.contourCoordArr[this.frameCount][0]
         const lat=this.contourCoordArr[this.frameCount][1];
         
@@ -282,6 +286,7 @@ export default {
         this.frameCount++
         }
       else if(this.frameCount>=this.contourLength &&this.contourCoordArr){
+        this.isLoading=false
         this.frameCount=0;
         this.contourLength=undefined;
         this.contourCoordArr=undefined;
