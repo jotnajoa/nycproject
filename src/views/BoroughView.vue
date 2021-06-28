@@ -4,6 +4,7 @@
 
       </div>
       <borough-analysis
+      @moveCounty='clearPrecinct'
       :selectedPrecinct='selectedPrecinct'
       
       ></borough-analysis>
@@ -54,6 +55,9 @@ export default {
     }
   },
   methods:{
+    clearPrecinct(){
+    this.selectedPrecinct=undefined;
+    },
     clearContour(){
       if(map){
         this.contourGeoJson={'type': 'FeatureCollection',
@@ -176,7 +180,8 @@ export default {
       map.on('mouseleave','precincts',this.leavePointer)
 
       
-      map.on('click','precincts',(e)=>{
+      map.on('click','precincts',async (e)=>{
+
         if(e.features[0].properties.county==this.selectedCounty){
 
         // this.precinctHighlighted=true;
@@ -194,9 +199,9 @@ export default {
         this.isNotClickPrecinct = ['!=',['get','precinct'],this.selectedPrecinct]
 
         const pretarget =e.features[0].geometry.coordinates;
-        console.log('lets check pretarget- geometry',pretarget.geometry,
-        'lets check pretarget only',pretarget,'what about length only',pretarget.length
-        )
+        // console.log('lets check pretarget- geometry',pretarget.geometry,
+        // 'lets check pretarget only',pretarget,'what about length only',pretarget.length
+        // )
         if(pretarget.length==1){
           const targetData = pretarget[0]
 
@@ -219,6 +224,7 @@ export default {
           '#FFFFFF'
           ]
           );
+
           map.setPaintProperty('precincts',
           'fill-opacity',
           ['case',
@@ -244,6 +250,7 @@ export default {
 
       
         this.createContourLine()
+
       }
       })
 
@@ -388,5 +395,6 @@ watch:{
   margin:0;
   padding:0;
 }
+
 
 </style>

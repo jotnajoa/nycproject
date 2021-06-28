@@ -53,7 +53,7 @@ div.backgroundimg{
 .black-text{color:#1A1A1A;}
 .orange-text{color:#F78F67;}
 .blue-text{color:#66c7ff;}
-.super-big-text{font-size:4rem;}
+.super-big-text{font-size:3.8rem;}
 .medium-big-text{font-size:2.2rem;}
 .big-text{font-size:1.4rem;}
 .medium-text{font-size:1rem;}

@@ -35,14 +35,16 @@ export default {
     },
     methods:{
         addLabel(){
-            d3.select('svg').append('text').classed('x-label',true)
+
+            d3.select('#line-chart').append('text').classed('x-label',true)
             .attr('transform',`translate(${this.width-this.margin.horizontal*1.5},${this.height-this.margin.vertical})`)
             .text('cost').style('fill','#F1F5FB').style('font-size','10px')
 
 
-            d3.select('svg').append('text').classed('y-label',true)
+            d3.select('#line-chart').append('text').classed('y-label',true)
             .attr('transform',`translate(${0},${this.margin.vertical/2})`)
             .text(this.yAxisName).style('fill','#F1F5FB').style('font-size','10px')
+
         },
         defineDataKeys(){
             console.log('datagroup was not loaded?',this.dataGroup)

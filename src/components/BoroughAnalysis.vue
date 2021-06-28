@@ -1,35 +1,35 @@
 <template>
 
-        
+        <p>{{showAnalysis}}</p>
     <teleport to='body'>
       <div class='tab'> 
           <div class="selection-tab">
               <div class='title-line white-text'>
                   <div style ='margin-left:1rem' class='bold'>Borough Selection</div>
-                  <switch-form
+                  <!-- <switch-form
                   style='margin-right:1rem'
                   :options='options'
                   smallSelection=true>
-                  </switch-form>
+                  </switch-form> -->
               </div>
               <div class='borough-button'>
                   <form class='form'>
                       <div class="white-text light button">
                           <input type='radio' id='radio-one' name='button-one' value='Brooklyn'
                           v-model='selectedCounty' />
-                          <label for='radio-one'>Brooklyn</label>
+                          <label for='radio-one' @click='moveCounty("Brooklyn")'>Brooklyn</label>
 
                           <input type='radio' id='radio-two' name='button-two' value='Queens'
                           v-model='selectedCounty' />
-                          <label for='radio-two'>Queens</label>
+                          <label for='radio-two' @click='moveCounty("Queens")'>Queens</label>
 
                           <input type='radio' id='radio-three' name='button-three' value='Manhattan'
                           v-model='selectedCounty' />
-                          <label for='radio-three'>Manhattan</label>
+                          <label for='radio-three' @click='moveCounty("Manhattan")'>Manhattan</label>
 
                           <input type='radio' id='radio-four' name='button-four' value='Bronx'
                           v-model='selectedCounty' />
-                          <label for='radio-four'>Bronx</label>
+                          <label for='radio-four' @click='moveCounty("Bronx")'>Bronx</label>
                       </div>
                   </form>
               </div>
@@ -41,7 +41,12 @@
                 <div>{{yearSelected}}</div>
             </div>
             <hr>
-            <div class='precinct-summary' v-if='selectedPrecinct'>
+            <div :class='{hide:!showAnalysis}' id='before-selection' class='white-text big-text light'>
+                
+                <div style='width:80%;margin:auto;text-align:center'>Choose precinct <span style=' background: linear-gradient(180deg, rgba(255,255,255,0) 60%, #66c7ff 60%);'>on the map</span> to explore</div>
+
+            </div>
+            <div class='precinct-summary' :class='{hide:showAnalysis}'>
                 <div class='sub-section'>
                     <div class='white-text medium'>{{selectedPrecinct}} Precinct</div>
                     <div class='summary-stats orange-text super-big-text'>
@@ -60,12 +65,21 @@
 
 
             </div>
-            <hr>
-            <div class='white-text medium-text medium graph-headline'>
-                <div>Parking Cost Distribution</div>
-                <div>legend sace</div>
+            <hr :class='{hide:showAnalysis}'>
+            <div class='white-text medium-text medium graph-headline' :class='{hide:showAnalysis}'>
+                <div class='bold'>Parking Cost Distribution</div>
+                <div style='display:flex;flex-direction:row;gap:0 0.4rem'>
+                    <div class='legend-rect'>
+                        <div class='blue legends'></div> 
+                        <div class='small-text'>Borough</div>
+                    </div>
+                    <div class='legend-rect'>
+                        <div class='orange legends'></div> 
+                        <div class='small-text'>County</div>
+                    </div>
+                </div>
             </div>
-            <div class="cost-dist" ref='lineGraphContainer'>
+            <div class="cost-dist" ref='lineGraphContainer' :class='{hide:showAnalysis}'>
                 <line-graph class='graphcontainer'
                 :width='width'
                 :height='lineGraphheight'
@@ -76,10 +90,10 @@
                 :lineColors='lineColors'
                 ></line-graph>
             </div>
-            <div class='white-text medium-text medium graph-headline'>
-                <div>Precinct vs Borough</div>
+            <div class='white-text medium-text medium graph-headline' :class='{hide:showAnalysis}'>
+                <div class='bold'>Precinct vs Borough</div>
             </div>
-            <div class='vsComparison'>
+            <div class='vsComparison' :class='{hide:showAnalysis}'>
                 <div class='bar-graph-container'
                 v-for='(bargroup,index) in comparisonData' 
                 :key='index'>
@@ -115,6 +129,19 @@
                     </div>
                 </div>
             </div>
+            <div class='white-text medium-text medium graph-headline' :class='{hide:showAnalysis}'>
+                <div class='bold'>Monthly Trend</div>
+            </div>
+            <div class="trendChart" ref='trendChart' :class='{hide:showAnalysis}'>
+                <monthly-plot
+                :width='width'
+                :height='trendGraphHeight'
+                :graphData='monthlyData'
+                :margin='margin'
+                >
+                </monthly-plot>
+            </div>
+            
         </div>
           
 
@@ -123,8 +150,9 @@
 
 </template>
 <script>
-
+import MonthlyPlot from './MonthlyPlot.vue'
 export default {
+    components:{MonthlyPlot},
     data(){
         return{
             targetPrecinctData:undefined,
@@ -135,6 +163,7 @@ export default {
             dataGroup:[],
             width:0,
             lineGraphheight:0,
+            trendGraphHeight:0,
             xAxisName:undefined,
             yAxisName:undefined,
             margin:{vertical:undefined,horizontal:undefined},
@@ -161,8 +190,11 @@ export default {
     },
     props:['selectedPrecinct'],
     computed:{
-
+    showAnalysis(){
+        return this.selectedPrecinct==undefined
+    },
     monthlyData(){
+        if(this.targetPrecinctData){
         var monthlyDataArr =[];
         this.countyPrecinctCount;
 
@@ -189,6 +221,8 @@ export default {
             )
         }
         return monthlyDataArr
+        }else{return null}
+
     },
 
       countyTicketFrequency(){
@@ -276,17 +310,21 @@ export default {
             this.$store.dispatch('ByTicketData/setTargetPrecinct',val)
             this.getMaxCost()
 
-        /*createPrecinctGraphDataSet & createCountyGraphDataset 
-        fill up dataGroup. so it has to be renewed in 
-        every selection*/
-
             this.dataGroup=[];
             this.createPrecinctGraphDataSet()
             this.createCountyGraphDataSet()
             this.barUpdate()
+            this.trendGraphHeight=this.$refs.trendChart.clientHeight
         }
     },
     methods:{
+        moveCounty(target){
+            if(this.selectedCounty==target){
+                null
+            }else{
+                this.$emit('moveCounty',target)
+            }
+        },
         showBarTooltip(target,index){
             this.tooltipToShow=target
             this.hoveredIndex=index
@@ -593,10 +631,11 @@ hr{
 }
 .vsComparison{
     margin-top:.5rem;
+    margin-left:1rem;
     padding:0;
     width:100%;
-    height:20%;
-    min-height:85px;
+    height:15%;
+    min-height:70px;
     display:flex;
     flex-direction:row;
 }
@@ -639,5 +678,36 @@ hr{
     box-shadow:1px 1px 3px #1a1a1a63;
     z-index:5
 }
+.trendChart{
+    margin-top:0.5rem;
+    width:100%;
+    height:25%;
+    min-height:85px;
+}
+.hide{
+    opacity:0
+}
+#before-selection{
+    position:absolute;
+    left:50%;
+    top:52%;
+    transform:translate(-50%,-50%);
+    display:flex;
+    align-items: center;
+    width:90%;
+    height:60%;
+    border:solid 1px #66c7ff98;
+    border-radius:10px;
+    background:rgba(0, 0, 0,0.2);
+}
 
+.legend-rect{
+  display:flex;
+  flex-direction: row;
+  gap: 0 0.2rem
+}
+.legends{
+  width:0.7rem;
+  height:0.7rem;
+}
 </style>
