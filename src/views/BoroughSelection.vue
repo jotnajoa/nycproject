@@ -61,7 +61,7 @@ export default {
           mouse:{x:undefined,y:undefined},
           getIntersect:false,
           maxRadius:1,
-          spacing:2.2,
+          spacing:2,
           currentSetup:'cost',
           width:undefined,
           height:undefined,
@@ -94,15 +94,7 @@ export default {
     )
 
     window.addEventListener('mousemove',this.mouseTrack)
-    window.addEventListener('resize', () => {
-    this.updateViewSize()
-    
-    setTimeout(()=>{
-        if(sphereGroup.children.length!=0){
-            sphereGroup.children.forEach((d)=>{this.moveText(d)})
-            }
-    },500)
-    })
+    window.addEventListener('resize', this.updateViewSize)
     window.addEventListener('click',this.raycasterUpdate)
 
   },
@@ -110,6 +102,7 @@ export default {
       window.removeEventListener('mousemove',this.mouseTrack)
       window.removeEventListener('mousemove',this.updateViewSize)
       window.removeEventListener('click',this.raycasterUpdate)
+      window.removeEventListener('resize',this.updateViewSize)
       cancelAnimationFrame(animationFrame);
     renderer=null;
 
@@ -376,11 +369,21 @@ unHighlight(){
 
 },
 updateViewSize(){
+    if(window.innerWidth<1200){
+        this.spacing=1.5;
+        this.maxRadius=0.7
+    }else if(window.innerWidth>=1200){
+        this.spacing=2;
+        this.maxRadius=1;
+    }
+
     this.width=this.$refs.container.clientWidth;
     this.height=this.$refs.container.clientHeight;
 
     canvas.style.height=`${this.height}px`
     canvas.style.width=`${this.width}px`;
+
+    this.drawSpheres();
 
 var horizontalFov = 45;
 
@@ -397,6 +400,14 @@ camera.fov = (Math.atan(Math.tan(((horizontalFov / 2) * Math.PI) / 180) / camera
     renderer.setSize( this.width, this.height );
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     camera.position.set( 0, 0, 5 );
+
+    setTimeout(()=>{
+        if(sphereGroup.children.length!=0){
+            sphereGroup.children.forEach((d)=>{this.moveText(d)})
+            }
+    },500)
+
+
 },
 moveText(targetMesh){
     const countyName = targetMesh.userData.countyName
@@ -637,13 +648,15 @@ text-align:center;
     align-content:flex-end;
     top:1rem;
     right:0rem;
-    width:45%;
-    gap:3rem;
+    width:55%;
     height:30%;
+
 }
 .leftpart,.rightpart{
+    flex-grow:1;
     display:flex;
     flex-direction:column;
+
 }
 .leftpart{
     width:25vw;
@@ -651,4 +664,9 @@ text-align:center;
 .rightpart{
     width:15vw;
 }
+.left-title.subpart{
+position:relative;
+left:25%;
+}
+
 </style>

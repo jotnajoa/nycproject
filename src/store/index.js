@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
 import Landing from './Landing/index.js'
-import GuiElement from './GraphicElement/index.js'
+
 import ByGeoData from './ByGeoData/index.js'
 import ByTicketData from './ByTicketData/index.js'
 
@@ -36,7 +36,6 @@ export default createStore({
     },
     modules: {
         Landing: Landing,
-        GuiElement: GuiElement,
         ByGeoData: ByGeoData,
         ByTicketData: ByTicketData
     },

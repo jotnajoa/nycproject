@@ -36,19 +36,19 @@
                      'small-switch-field':smallSelection}"
      v-if='twoSelection'>
 
-        <input type="radio" id="radio-first" name="switch-first" 
+        <input type="radio" :id="'radio-first'+id" name="switch-first" 
         @change="categoryChange"
         :value="options[0]" 
         v-model='selected'
         />
-        <label for="radio-first">{{options[0].toUpperCase()}}</label>
+        <label :for="'radio-first'+id">{{options[0].toUpperCase()}}</label>
 
-        <input type="radio" id="radio-second" name="switch-second" 
+        <input type="radio" :id="'radio-second'+id" name="switch-second" 
         @change="categoryChange"
         :value="options[1]" 
         v-model='selected'
         />
-        <label for="radio-second">{{options[1].toUpperCase()}}</label>
+        <label :for="'radio-second'+id">{{options[1].toUpperCase()}}</label>
     </div>
 </form>
 
@@ -56,13 +56,14 @@
 
 <script>
 export default {
-    props:['options','smallSelection'],
+
+    props:['options','smallSelection','id'],
     data(){
         return{
             selected:undefined
             }
     },
-    emits: ['selectedCategory'],
+
     methods:{
         categoryChange(){
             this.$emit("selectedCategory", this.selected);
@@ -106,11 +107,11 @@ export default {
 
 .switch-field label {
     background-color: #FFFFFF;
-    color: #1A1A1A;
-    font-size: 1rem;
+    color: #666666af;
+    font-size: 0.6rem;
     line-height: 1;
     text-align: center;
-    padding: 0.5rem 2rem;
+    padding: 0.1rem 0.8rem;
     /* margin-right: -1px; */
     border: 1px solid rgba(0, 0, 0, 0.2);
     box-shadow: inset 0 0.5px 0.5px rgba(0, 0, 0, 0.13);
@@ -129,11 +130,11 @@ export default {
 }
 
 .switch-field label:first-of-type {
-    border-radius: 4px 0 0 4px;
+    border-radius: 1px 0 0 1px;
 }
 
 .switch-field label:last-of-type {
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 1px 1px 0;
 }
 
 
@@ -182,11 +183,11 @@ export default {
 }
 
 .small-switch-field label:first-of-type {
-    border-radius: 4px 0 0 4px;
+    border-radius: 1px 0 0 1px;
 }
 
 .small-switch-field label:last-of-type {
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 1px 1px 0;
 }
 
 

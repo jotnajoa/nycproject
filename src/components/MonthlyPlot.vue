@@ -73,10 +73,7 @@ export default {
               .attr('transform',d=>`translate(${this.xScale(d.month)},0)`)
               .selectAll('rect')
               .data((d)=>{
-                  console.log('check subgroups',this.subgroups.map(
-                      (t)=> {return { key:t ,value:d[t]} } 
-                      )
-                  )
+
                   return this.subgroups
                              .map((t)=>{
                                  return {key:t,value:d[t]}

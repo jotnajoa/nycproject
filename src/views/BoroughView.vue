@@ -123,9 +123,6 @@ export default {
         );
     },
     createLayer(){
-
-
-
       map.addSource('precinct',{
         type:'geojson',
         data:this.precinctGeoJson

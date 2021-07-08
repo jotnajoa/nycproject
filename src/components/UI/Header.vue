@@ -1,6 +1,6 @@
 <template>
 <teleport to='body'>
-<div class="headercontainer">
+<div class="headercontainer white">
 
     <div class='header-nav'>
         <div class="title">
@@ -32,11 +32,15 @@ export default {
 </script>
 
 <style scoped>
-
+a{
+    text-decoration: none;
+}
 .headercontainer{
-    position:absolute;
+    position:fixed;
     z-index: 2;
-    top:1rem;
+    padding:0.5rem;
+    top:0;
+    left:0;
 }
 
 .routers{
@@ -53,6 +57,28 @@ export default {
 }
 .router-link-active{
     border-top: 3px solid rgb(52, 52, 52);
+}
+
+
+@media screen and (max-width: 500px) {
+
+.headercontainer{
+    color:#F1F5FB;
+    background:rgba(57, 57, 57,0);
+    position:fixed;
+    z-index: 2;
+    padding:0.5rem;
+    top:0;
+    left:0;
+}
+.routers a{
+    color:#F1F5FB;
+}
+
+.router-link-active{
+    border-top: 3px solid #F78F67;
+}
+
 }
 
 </style>

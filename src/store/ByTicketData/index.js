@@ -3,7 +3,7 @@ export default {
     namespaced: true,
     state() {
         return {
-            targetYearData: undefined,
+            targetYearData: [],
             targetYear: 2021,
             targetPrecinct: undefined,
             // frequencyPerplate: undefined,
@@ -38,7 +38,6 @@ export default {
         async loadYearData(context) {
             const year = context.state.targetYear;
             const data = await d3.json(`${year}data.json`);
-            console.log(data)
             context.commit('createYearData', data);
         },
 
@@ -84,7 +83,7 @@ export default {
             boroughArr.forEach((d) => {
                 boroughPrecinctUniqueArr.push(d['Precinct'])
             })
-            console.log(boroughPrecinctUniqueArr)
+
             var uniqPrecinct = [...new Set(boroughPrecinctUniqueArr)]
             const boroughLength = uniqPrecinct.length;
             const avgCost = Math.round(costSum * 10 / boroughLength) / 10;
@@ -99,7 +98,7 @@ export default {
                 targetBorough == 'Bronx' ? 'BX' : 'unknown';
 
             const boroughArr = Array.from(state.targetYearData.filter(d => d['County'] == boroughInitial));
-            console.log(boroughArr)
+
             return boroughArr
         }
     }

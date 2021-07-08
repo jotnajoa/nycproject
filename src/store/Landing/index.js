@@ -3,16 +3,23 @@ export default {
     namespaced: true,
     state() {
         return {
-            boroSummary: [
-                // {year:2021, county:'Brooklyn',totalCount:undefined,totalCost:undefined},
-                // {year:2021, county:'Brooklyn',totalCount:undefined,totalCost:undefined},
-                // {year:2021, county:'Brooklyn',totalCount:undefined,totalCost:undefined},
-                // {year:2021, county:'Brooklyn',totalCount:undefined,totalCost:undefined},
-            ],
+            boroSummary: [],
             year: 2021,
+            monthlySummary: [],
+            yearSummary: [],
+            proportionData: []
         }
     },
     mutations: {
+        proportionSummary(state, payload) {
+            state.proportionData = payload
+        },
+        yearSummary(state, payload) {
+            state.yearSummary = payload;
+        },
+        createMonthlySummary(state, payload) {
+            state.monthlySummary = payload;
+        },
         yearChange(state, payload) {
             state.year = payload
         },
@@ -49,6 +56,15 @@ export default {
         },
         year(state) {
             return state.year
+        },
+        monthlySummary(state) {
+            return state.monthlySummary
+        },
+        yearSummary(state) {
+            return state.yearSummary
+        },
+        proportionData(state) {
+            return state.proportionData
         }
     },
     actions: {
@@ -59,7 +75,13 @@ export default {
             const data = await d3.json(`${year}data.json`);
             context.commit('createSummary', data);
 
+            const summaryData = await d3.json(`./summaryData/${year}Monthlydata.json`);
+            const yearSummary = await d3.json(`./summaryData/${year}Summary.json`);
+            const percentData = await d3.json(`./summaryData/percentSummary.json`)
 
+            context.commit('createMonthlySummary', summaryData);
+            context.commit('yearSummary', yearSummary);
+            context.commit('proportionSummary', percentData)
         }
 
     }
